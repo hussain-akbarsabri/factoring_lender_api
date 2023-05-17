@@ -52,6 +52,9 @@ group :development do
   # gem "spring"
 end
 
+gem 'active_model_serializers'
+gem 'activestorage'
+gem 'cloudinary'
 gem 'devise'
 gem 'devise-jwt'
-gem 'fast_jsonapi'
+gem 'dotenv-rails'

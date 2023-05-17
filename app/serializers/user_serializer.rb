@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 # UserSerializer
-class UserSerializer
-  include FastJsonapi::ObjectSerializer
-  attributes :id, :email, :created_at
+class UserSerializer < ActiveModel::Serializer
+  attributes :id, :name, :email, :role_type
 end

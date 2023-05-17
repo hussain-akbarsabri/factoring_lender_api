@@ -1,0 +1,2 @@
+LENDER = 'lender'
+BORROWER = 'borrower'

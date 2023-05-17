@@ -3,10 +3,9 @@
 # UsersController
 class UsersController < ApplicationController
   def index
-    # make constants
-    users = if params[:role_type] == 'lender'
+    users = if params[:role_type] == LENDER
               Lender.all
-            elsif params[:role_type] == 'borrower'
+            elsif params[:role_type] == BORROWER
               Borrower.all
             else
               User.all

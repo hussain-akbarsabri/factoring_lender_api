@@ -3,6 +3,7 @@
 # InvoicesController
 class InvoicesController < ApplicationController
   before_action :authorize_invoice, only: [:assign_invoice]
+  before_action :find_invoice, only: %i[assign_invoice update]
 
   def index
     invoices = if params[:lender_id]
@@ -42,6 +43,10 @@ class InvoicesController < ApplicationController
   end
 
   private
+
+  def find_invoice
+    Invoice.find(params[:id])
+  end
 
   def invoice_params
     params.permit(:invoice_amount, :invoice_due_date, :invoice_image, :borrower_id)

@@ -7,14 +7,16 @@ class Invoice < ApplicationRecord
   belongs_to :lender, optional: true
   belongs_to :borrower
 
-  enum status: { created: 0, rejected: 1, approved: 2, purchased: 3, closed: 4 }
+  has_one_attached :invoice_image
 
   validates :invoice_number, presence: true, uniqueness: true
   validates :invoice_amount, presence: true, numericality: { greater_than: 0 }
   validates :invoice_due_date, presence: true
   validates :status, presence: true
+  validate :approved_invoices_can_be_purchased
+  validate :purchased_invoices_can_be_closed
 
-  has_one_attached :invoice_image
+  enum status: { created: 0, rejected: 1, approved: 2, purchased: 3, closed: 4 }
 
   private
 
@@ -23,5 +25,17 @@ class Invoice < ApplicationRecord
       random_code = rand(100_000..999_999)
       break random_code unless Invoice.exists?(invoice_number: random_code)
     end
+  end
+
+  def approved_invoices_can_be_purchased
+    return unless status == 'approved' && status_was != 'approved'
+
+    errors.add(:status, ': Only approved invoices can be purchased')
+  end
+
+  def purchased_invoices_can_be_closed
+    return unless status == 'closed' && status_was != 'purchased'
+
+    errors.add(:status, ': Only purchased invoices can be closed')
   end
 end

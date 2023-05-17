@@ -2,9 +2,21 @@
 
 # InvoicesController
 class InvoicesController < ApplicationController
+  before_action :authorize_invoice, only: [:assign_invoice]
+
+  def index
+    invoices = if params[:lender_id]
+                 Lender.find(params[:lender_id]).invoices
+               elsif params[:borrower_id]
+                 Borrower.find(params[:borrower_id]).invoices
+               else
+                 Invoice.all
+               end
+    render json: invoices, status: :ok
+  end
+
   def create
-    borrower = Borrower.find(params[:borrower_id])
-    invoice = borrower.invoices.build(invoice_params)
+    invoice = Invoice.new(invoice_params)
 
     if invoice.save
       render json: invoice, status: :created
@@ -20,9 +32,22 @@ class InvoicesController < ApplicationController
     render json: invoice, status: :ok
   end
 
+  def update
+    invoice = Invoice.find(params[:id])
+    if invoice.update(status: params[:status])
+      render json: invoice, status: :ok
+    else
+      render json: { error: invoice.errors.full_messages }, status: :unprocessable_entity
+    end
+  end
+
   private
 
   def invoice_params
-    params.permit(:invoice_amount, :invoice_due_date, :invoice_image)
+    params.permit(:invoice_amount, :invoice_due_date, :invoice_image, :borrower_id)
+  end
+
+  def authorize_invoice
+    authorize Invoice
   end
 end

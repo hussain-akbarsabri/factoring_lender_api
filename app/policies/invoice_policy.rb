@@ -2,6 +2,7 @@
 
 # InvoicePolicy
 class InvoicePolicy < ApplicationPolicy
+  # Scope
   class Scope < Scope
     def resolve
       scope.all
@@ -14,6 +15,10 @@ class InvoicePolicy < ApplicationPolicy
 
   def assign_invoice?
     borrower?
+  end
+
+  def update?
+    lender?
   end
 
   private

@@ -35,10 +35,14 @@ class InvoicesController < ApplicationController
 
   def update
     invoice = Invoice.find(params[:id])
-    if invoice.update(status: params[:status])
-      render json: invoice, status: :ok
+    if Invoice.statuses.include?(params[:status])
+      if invoice.update(status: params[:status])
+        render json: invoice, status: :ok
+      else
+        render json: { error: invoice.errors.full_messages }, status: :unprocessable_entity
+      end
     else
-      render json: { error: invoice.errors.full_messages }, status: :unprocessable_entity
+      render json: { error: 'Invalid status' }, status: :unprocessable_entity
     end
   end
 

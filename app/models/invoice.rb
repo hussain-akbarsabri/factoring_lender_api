@@ -28,7 +28,7 @@ class Invoice < ApplicationRecord
   end
 
   def approved_invoices_can_be_purchased
-    return unless status == 'approved' && status_was != 'approved'
+    return unless status == 'purchased' && status_was != 'approved'
 
     errors.add(:status, ': Only approved invoices can be purchased')
   end
